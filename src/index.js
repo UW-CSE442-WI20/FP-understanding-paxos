@@ -33,6 +33,7 @@ function resize() {
   screenHeight = window.innerHeight;
   graphicWidth = screenWidth * 0.35
   graphicHeight = screenHeight * 1
+  update();
 }
 
 let sections = [];
@@ -84,6 +85,21 @@ function scroll() {
   }
 }
 
+// helpers
+d3.selection.prototype.moveToFront = function() {
+  return this.each(function(){
+    this.parentNode.appendChild(this);
+  });
+};
+d3.selection.prototype.moveToBack = function() {
+    return this.each(function() {
+        var firstChild = this.parentNode.firstChild;
+        if (firstChild) {
+            this.parentNode.insertBefore(this, firstChild);
+        }
+    });
+}
+
 function update() {
   d3.select('#title').style('color', curSection === 0 ? 'black' : 'lightgray');
   d3.selectAll('.step').style('color', (d, i) => i + 1 === curSection ? 'black' : 'lightgray');
@@ -97,6 +113,31 @@ const circleRadius = 40;
 
 const clientColor = 'black';
 const serverColor = 'cadetblue';
+const messageColor = 'violetred';
+
+const messageDuration = 1500;
+
+function repeatMessage(messages, state) {
+  d3.selectAll('#viz>svg>circle.message')
+    .data(messages)
+    .attr('cx', d => state[d.from].x * graphicWidth)
+    .attr('cy', d => state[d.from].y * graphicHeight)
+    .attr('r', d => d.r)
+    .transition()
+    .duration(messageDuration)
+    .ease(d3.easeQuad)
+    .attr('cx', d => state[d.to].x * graphicWidth)
+    .attr('cy', d => state[d.to].y * graphicHeight)
+    .end()
+    .then(function() {
+      repeatMessage(messages, state);
+    }).catch(e => console.log(e));
+}
+
+function clearMessage() {
+  d3.selectAll('#viz .message')
+    .remove();
+}
 
 let initState = [];
 function init() {
@@ -119,6 +160,7 @@ function init() {
 function update0() {
   console.log(0);
 
+  clearMessage();
   d3.select('#viz>svg')
     .selectAll('circle')
     // .data(initState)
@@ -132,9 +174,15 @@ let state1 = [];
 function update1() {
   console.log(1);
 
+  clearMessage();
+
   copystate(initState, state1);
   state1[0] = {x: 0.25, y: 0.5, r: circleRadius, stroke: clientColor, opacity: 1, class: 'client'};
   state1[1] = {x: 0.75, y: 0.5, r: circleRadius, stroke: serverColor, opacity: 1, class: 'server'};
+
+  messages = [
+    {from: 0, to: 1, r: circleRadius / 3, class: 'message'}
+  ]
 
   d3.select('#viz>svg')
     .selectAll('circle')
@@ -146,15 +194,32 @@ function update1() {
     .attr('cy', d => d.y * graphicHeight)
     .attr('r', d => d.r)
     .attr('opacity', d => d.opacity)
-    .attr('stroke', d => d.stroke);
+    .attr('stroke', d => d.stroke)
+    .end()
+    .then( function() {
+      d3.select('#viz>svg')
+        .selectAll('.message')
+        .data(messages)
+        .enter()
+        .append('circle')
+        .style('fill', 'orange')
+        .attr('class', 'message')
+        .moveToBack();
+      repeatMessage(messages, state1);
+    }).catch(e => console.log(e));
+
+
 }
 
 let state2 = [];
 function update2() {
   console.log(2);
 
-  copystate(state1, state2);
-  state2[1].opacity = 0.2;
+  clearMessage();
+
+  copystate(initState, state2);
+  state2[0] = {x: 0.25, y: 0.5, r: circleRadius, stroke: clientColor, opacity: 1, class: 'client'};
+  state2[1] = {x: 0.75, y: 0.5, r: circleRadius, stroke: serverColor, opacity: 0.2, class: 'server'};
 
   d3.select('#viz>svg')
     .selectAll('circle')
@@ -173,10 +238,19 @@ let state3 = [];
 function update3() {
   console.log(3);
 
-  copystate(state2, state3);
-  state3[1] = {x: 0.75, y: 0.42, r: circleRadius, stroke: serverColor, opacity: 1, class: 'server'};
-  state3[2] = {x: 0.65, y: 0.57, r: circleRadius, stroke: serverColor, opacity: 1, class: 'server'};
-  state3[3] = {x: 0.85, y: 0.57, r: circleRadius, stroke: serverColor, opacity: 1, class: 'server'};
+  clearMessage();
+
+  copystate(initState, state3);
+  state3[0] = {x: 0.25, y: 0.5, r: circleRadius, stroke: clientColor, opacity: 1, class: 'client'};
+  state3[1] = {x: 0.75, y: 0.35, r: circleRadius, stroke: serverColor, opacity: 1, class: 'server'};
+  state3[2] = {x: 0.75, y: 0.50, r: circleRadius, stroke: serverColor, opacity: 1, class: 'server'};
+  state3[3] = {x: 0.75, y: 0.65 , r: circleRadius, stroke: serverColor, opacity: 1, class: 'server'};
+
+  messages = [
+    {from: 0, to: 1, r: circleRadius / 3, class: 'message'},
+    {from: 0, to: 2, r: circleRadius / 3, class: 'message'},
+    {from: 0, to: 3, r: circleRadius / 3, class: 'message'}
+  ]
 
   d3.select('#viz>svg')
     .selectAll('circle')
@@ -189,7 +263,25 @@ function update3() {
     .attr('r', d => d.r)
     .attr('opacity', d => d.opacity)
     .attr('stroke', d => d.stroke)
-    .attr('class', d => d.class);
+    .attr('class', d => d.class)
+    .end()
+    .then(function() {
+      d3.select('#viz>svg')
+        .selectAll('.message')
+        .data(messages)
+        .enter()
+        .append('circle')
+        .style('fill', 'orange')
+        .attr('class', 'message')
+        .moveToBack();
+      repeatMessage(messages, state3);
+    }).catch(e => console.log(e));
+}
+
+function update4() {
+
+  clearMessage();
+
 }
 
 function copystate(from, to) {

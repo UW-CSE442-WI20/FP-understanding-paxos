@@ -61,7 +61,7 @@ body {
 }
 
 #viz>svg>circle {
-    fill: none;
+    fill: white;
     stroke-width: 5px;
 }
 
