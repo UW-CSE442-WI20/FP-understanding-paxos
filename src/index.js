@@ -20,6 +20,7 @@ const d3 = require('d3')
 //   })
 // import classes
 import States from './sections';
+import Parser from './parser';
 
 window.onresize = resize;
 window.onload = start;
@@ -43,31 +44,38 @@ function resize() {
 let sections = [];
 let curSection = 0;
 const sectionFunctionPrefix = 'update';
+const statesData = require('./states.csv');
+const messagesData = require('./messages.csv');
 
 function start() {
+  Parser.parse(statesData).then(function() {
+    console.log(Parser.out);
+    let statesOut = Parser.out;
+    Parser.clear();
+    Parser.parse(messagesData).then(function (){
+      console.log(Parser.out);
+      states = new States(statesOut, Parser.out, graphicWidth, graphicHeight);
 
-  states = new States(graphicWidth, graphicHeight);
+      resize();
+      states.init();
+      update();
 
-  resize();
+      let start;
+      d3.selectAll('.step').each(function(d, i) {
+        let top = this.getBoundingClientRect().top;
 
-  states.init();
+        if (i === 0) {
+          start = top;
+        }
 
-  update();
+        sections.push(top - start);
+      });
 
-  let start;
-  d3.selectAll('.step').each(function(d, i) {
-    let top = this.getBoundingClientRect().top;
+      console.log(sections)
 
-    if (i === 0) {
-      start = top;
-    }
-
-    sections.push(top - start);
+      d3.select(window).on('scroll.scroller', scroll);
+    });
   });
-
-  console.log(sections)
-
-  d3.select(window).on('scroll.scroller', scroll);
 }
 
 function scroll() {
@@ -102,5 +110,5 @@ function update() {
   d3.select('#title').style('color', curSection === 0 ? 'black' : 'lightgray');
   d3.selectAll('.step').style('color', (d, i) => i + 1 === curSection ? 'black' : 'lightgray');
 
-  states[sectionFunctionPrefix + curSection]();
+  states['update'](curSection);
 }

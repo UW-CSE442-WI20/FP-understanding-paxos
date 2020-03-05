@@ -5,7 +5,7 @@ class Draw {
   constructor () {
   }
 
-  static updateState(stateNum, circles, messages = [], resend = true) {
+  static updateState(stateNum, circles, messages = []) {
     Draw.stateNum = stateNum;
     d3.select('#viz>svg')
       .selectAll('circle')
