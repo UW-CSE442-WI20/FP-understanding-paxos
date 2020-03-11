@@ -1,7 +1,7 @@
 
 // You can require libraries
 const d3 = require('d3')
-
+import PaxosCluster from './paxos';
 // // You can include local JS files:
 // const MyClass = require('./my-class');
 // const myClassInstance = new MyClass();
@@ -43,7 +43,6 @@ function resize() {
 
 let sections = [];
 let curSection = 0;
-const sectionFunctionPrefix = 'update';
 const statesData = require('./states.csv');
 const messagesData = require('./messages.csv');
 

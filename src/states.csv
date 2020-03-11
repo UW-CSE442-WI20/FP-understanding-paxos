@@ -139,3 +139,13 @@ state:int,x:float,y:float,r:int,stroke:string,fill:string,opacity:float,class:st
 13,0.5,0.5,0,black,white,0,client,
 13,0.5,0.5,0,black,white,0,client,
 13,0.5,0.5,0,black,white,0,client,
+14,0.2,0.5,60,black,white,1,client,Client
+14,0.6,0.4,60,cadetblue,cadetblue,1,server proposer,Proposer
+14,0.9,0.4,60,mediumslateblue,mediumslateblue,1,server acceptor,Acceptor
+14,0.75,0.6,60,hotpink,hotpink,1,server learner,Learner
+14,0.5,0.5,0,black,white,0,client,
+14,0.5,0.5,0,black,white,0,client,
+14,0.5,0.5,0,black,white,0,client,
+14,0.5,0.5,0,black,white,0,client,
+14,0.5,0.5,0,black,white,0,client,
+14,0.5,0.5,0,black,white,0,client,
