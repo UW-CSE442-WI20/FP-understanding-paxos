@@ -13,129 +13,138 @@ class PaxosMachine {
     this.acceptorAcceptNumber = -1;
     this.acceptorProposalNumber = -1;
     this.cluster = cluster;
+    this.acceptorValue = null;
+    this.proposerValue = null;
   }
 
-    handle(message) {
-        switch(this.role) {
-            case 'client': {
-                this.clientValue = message.value;
-                break;
+  handle(message) {
+   switch(this.role) {
+      case 'client': {
+        this.clientValue = message.value;
+        Draw.updateCircleValue(this.cluster.stateNum, this.cluster.machines.indexOf(this), this.clientValue, true);
+        break;
+      }
+      case 'proposer': {
+        switch(message.type) {
+          // got (possibly duplicate) client request
+          case 'client request': {
+            if (this.proposerValue == undefined) {
+              this.proposerValue = message.value;
+              this.proposerVoters = [];
+              // TODO: send prepare requests to all acceptors (p1a)
+              let p1a = {type: 'prepare request', proposalNumber: this.proposerProposalNumber, sender: this};
+
+              Draw.updateCircleValue(this.cluster.stateNum, this.cluster.machines.indexOf(this), this.proposerProposalNumber + ', ' + this.proposerValue, false);
+              this.cluster.send(p1a, this, this.cluster.acceptors);
             }
-            case 'proposer': {
-                switch(message.type) {
-                    // got (possibly duplicate) client request
-                    case 'client request': {
-                        if (this.proposerValue == undefined) {
-                            this.proposerValue = message.value;
-                            this.proposerVoters = [];
-                            // TODO: send prepare requests to all acceptors (p1a)
-                            let p1a = {type: 'prepare request', proposalNumber: this.proposerProposalNumber, sender: this};
+            break;
+          }
 
-                            this.cluster.send(p1a, this, this.cluster.acceptors);
-                        }
-                        break;
-                    }
+          // got prepare response (promise) on a serial number
+          case 'prepare response': {  // p1b
+            if (message.status == 'fail') {
+              this.proposerProposalNumber += this.cluster.proposers.length;
+              this.proposerVoters = [];
+              // TODO: resend p1a
+              let p1a = {type: 'prepare request', proposalNumber: this.proposerProposalNumber, sender: this};
+              Draw.updateCircleValue(this.cluster.stateNum, this.cluster.machines.indexOf(this), this.proposerProposalNumber + ', ' + this.proposerValue, false);
+              this.cluster.send(p1a, this, this.cluster.acceptors);
 
-                    // got prepare response (promise) on a serial number
-                    case 'prepare response': {  // p1b
-                        if (message.status == 'fail') {
-                            this.proposerProposalNumber += this.cluster.proposers.length;
-                            this.proposerVoters = [];
-                            // TODO: resend p1a
-                            let p1a = {type: 'prepare request', proposalNumber: this.proposerProposalNumber, sender: this};
+            } else if (message.status == 'success') {
+              // consume existing value
+              if (message.value != undefined) {
+                this.proposerValue = message.value;
+              }
 
-                            this.cluster.send(p1a, this, this.cluster.acceptors);
+              if (!(message.sender in this.proposerVoters)) {
+                this.proposerVoters.push(message.sender);
+                // majority consensus
+                if (this.proposerVoters.length > this.cluster.acceptors.length / 2) {
+                  // TODO: send p2a to all acceptors
+                  this.proposerVoters = [];
+                  let p2a = {type: 'accept request', value: this.proposerValue, proposalNumber: this.proposerProposalNumber, sender: this};
 
-                        } else if (message.status == 'success') {
-                            // consume existing value
-                            if (message.value != undefined) {
-                                this.proposerValue = message.value;
-                            }
-
-                            if (!(message.sender in this.proposerVoters)) {
-                                this.proposerVoters.push(message.sender);
-                                // majority consensus
-                                if (this.proposerVoters.length > this.cluster.acceptors.length / 2) {
-                                    // TODO: send p2a to all acceptors
-                                    this.proposerVoters = [];
-                                    let p2a = {type: 'accept request', value: this.proposerValue, proposalNumber: this.proposerProposalNumber, sender: this};
-
-                                    this.cluster.send(p2a, this, this.cluster.acceptors);
-                                }
-                            }
-                        }
-                        break;
-                    }
-
-                    // got accept response (vote)
-                    case 'accept response': {  // p2b
-                        if (message.status == 'fail') {
-                            this.proposerProposalNumber += this.cluster.proposers.length;
-                            this.proposerVoters = [];
-                            // TODO: resend p1a
-                            let p1a = {type: 'prepare request', proposalNumber: this.proposerProposalNumber, sender: this};
-
-                            this.cluster.send(p1a, this, this.cluster.acceptors);
-                        } else if (message.status == 'success') {
-                            if (!(message.sender in this.proposerVoters)) {
-                                this.proposerVoters.push(message.sender);
-                                // majority consensus
-                                if (this.proposerVoters.length > this.cluster.acceptors.length / 2) {
-                                    // TODO: send value to learners
-                                    let learnerMessage = {value: this.proposerValue};
-
-                                    this.cluster.send(learnerMessage, this, this.cluster.learners);
-                                }
-                            }
-                        }
-                        break;
-                    }
+                  this.cluster.send(p2a, this, this.cluster.acceptors);
                 }
-                break;
+              }
             }
-            case 'acceptor': {
-                switch(message.type) {
-                    case 'prepare request': {
-                        if (this.acceptorProposalNumber < message.proposalNumber) {
-                            this.acceptorProposalNumber = message.proposalNumber;
+            break;
+          }
 
-                            // send success prepare response with current value and acceptNumber
-                            let p1b = {type: 'prepare response', status: 'success', proposalNumber: this.acceptorAcceptNumber, value: this.acceptorValue};
-                            this.cluster.send(p1b, this, [message.sender]);
-                        } else {
-                            // send fail prepare response
-                            let p1b = {type: 'prepare response', status: 'fail'};
-                            this.cluster.send(p1b, this, [message.sender]);
-                        }
-                        break;
-                    }
-                    case 'accept request': {
-                        if (this.acceptorProposalNumber <= message.proposalNumber) {
-                            this.acceptorAcceptNumber = message.proposalNumber;
-                            this.acceptorProposalNumber = message.proposalNumber;
-                            this.acceptorValue = message.value;
+          // got accept response (vote)
+          case 'accept response': {  // p2b
+            if (message.status == 'fail') {
+              this.proposerProposalNumber += this.cluster.proposers.length;
+              this.proposerVoters = [];
+              // TODO: resend p1a
+              let p1a = {type: 'prepare request', proposalNumber: this.proposerProposalNumber, sender: this};
+              Draw.updateCircleValue(this.cluster.stateNum, this.cluster.machines.indexOf(this), this.proposerProposalNumber + ', ' + this.proposerValue, false);
 
-                            // send succes accept response
-                            let p2b = {type: 'accept response', status: 'success'};
-                            this.cluster.send(p2b, this, [message.sender]);
-                        } else {
-                            // send fail accept response
-                            let p2b = {type: 'accept response', status: 'fail'};
-                            this.cluster.send(p2b, this, [message.sender]);
-                        }
-                        break;
-                    }
+              this.cluster.send(p1a, this, this.cluster.acceptors);
+            } else if (message.status == 'success') {
+              if (!(message.sender in this.proposerVoters)) {
+                this.proposerVoters.push(message.sender);
+                // majority consensus
+                if (this.proposerVoters.length > this.cluster.acceptors.length / 2) {
+                  // TODO: send value to learners
+                  let learnerMessage = {value: this.proposerValue};
+
+                  Draw.updateCircleValue(this.cluster.stateNum, this.cluster.machines.indexOf(this), this.proposerProposalNumber + ', ' + this.proposerValue, true);
+                  this.cluster.send(learnerMessage, this, this.cluster.learners);
                 }
-                break;
+              }
             }
-            case 'learner': {
-                this.learnerValue = message.value;
-                // send value to client
-                this.cluster.send({value: this.learnerValue}, this, this.cluster.clients);
-                break;
-            }
+            break;
+          }
         }
+        break;
+      }
+      case 'acceptor': {
+        switch(message.type) {
+          case 'prepare request': {
+            if (this.acceptorProposalNumber < message.proposalNumber) {
+              this.acceptorProposalNumber = message.proposalNumber;
+
+              // send success prepare response with current value and acceptNumber
+              let p1b = {type: 'prepare response', status: 'success', proposalNumber: this.acceptorAcceptNumber, value: this.acceptorValue};
+              Draw.updateCircleValue(this.cluster.stateNum, this.cluster.machines.indexOf(this), this.acceptorProposalNumber + ', ' + this.acceptorValue, true);
+              this.cluster.send(p1b, this, [message.sender]);
+            } else {
+              // send fail prepare response
+              let p1b = {type: 'prepare response', status: 'fail'};
+              this.cluster.send(p1b, this, [message.sender]);
+            }
+            break;
+          }
+          case 'accept request': {
+            if (this.acceptorProposalNumber <= message.proposalNumber) {
+              this.acceptorAcceptNumber = message.proposalNumber;
+              this.acceptorProposalNumber = message.proposalNumber;
+              this.acceptorValue = message.value;
+
+              // send succes accept response
+              let p2b = {type: 'accept response', status: 'success'};
+              Draw.updateCircleValue(this.cluster.stateNum, this.cluster.machines.indexOf(this), this.acceptorProposalNumber + ', ' + this.acceptorValue, true);
+              this.cluster.send(p2b, this, [message.sender]);
+              } else {
+                // send fail accept response
+                let p2b = {type: 'accept response', status: 'fail'};
+                this.cluster.send(p2b, this, [message.sender]);
+              }
+              break;
+          }
+        }
+        break;
+      }
+      case 'learner': {
+        this.learnerValue = message.value;
+        // send value to client
+        Draw.updateCircleValue(this.cluster.stateNum, this.cluster.machines.indexOf(this), this.learnerValue, true);
+        this.cluster.send({value: this.learnerValue}, this, this.cluster.clients);
+        break;
+      }
     }
+  }
 }
 
 class PaxosCluster {
@@ -160,7 +169,7 @@ class PaxosCluster {
     this.acceptors = [];
     this.learners = [];
     this.machines = [];
-    
+
     // this.machines maintains same order as state
     let paxosMachine;
     for (let i in this.state) {
@@ -174,8 +183,8 @@ class PaxosCluster {
           break;
         case 'server proposer':
           paxosMachine = new PaxosMachine('proposer', this);
-          paxosMachine.proposerProposalNumber = this.proposers.length;
           this.proposers.push(paxosMachine);
+          paxosMachine.proposerProposalNumber = this.proposers.length;
           break;
         case 'server acceptor':
           paxosMachine = new PaxosMachine('acceptor', this);

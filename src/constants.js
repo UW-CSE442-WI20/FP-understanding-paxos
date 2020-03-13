@@ -7,6 +7,8 @@ export const STATE_TRANSITION_MS = 200;
 export const CIRCLE_LABEL_PADDING_RATIO = 1.3;
 export const CIRCLE_GLOW_RATIO = 1.2;
 export const CIRCLE_GLOW_OPACITY = 0.6;
+export const CIRCLE_VALUE_FONT_SIZE = 16;
+export const CIRCLE_VALUE_TRANSITION_MS = 100;
 
 export const MESSAGE_RADIUS_PX = 20;
 export const MESSAGE_DURATION_MS = 1000;

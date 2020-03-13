@@ -49,7 +49,7 @@ class States {
     Draw.set(stateNumber, States.states[stateNumber], States.messages[stateNumber], States.captions[stateNumber]);
 
     Draw.reset();
-  
+
     Draw.drawPageTitle(stateNumber);
     Draw.drawTitle(stateNumber);
     Draw.drawSubtitle(stateNumber);
@@ -63,6 +63,7 @@ class States {
         switch(stateNumber) {
           case 14: {
             States.cluster = new PaxosCluster(14, States.states[14]);
+            Draw.drawCircleValues(stateNumber, States.cluster.machines);
             States.setupListeners(14);
             States.cluster.clients.forEach(client => {
               Draw.drawGlow(14, States.cluster.machines.indexOf(client));
@@ -88,6 +89,7 @@ class States {
       .on('click', function(d) {
         let clientMachinesIndex = States.states[stateNumber].indexOf(d);
         let clientRequest = {type: 'client request', value: 'hello, world'};
+        Draw.updateCircleValue(States.cluster.stateNum, clientMachinesIndex, clientRequest.value, false);
         States.cluster.send(clientRequest, States.cluster.machines[clientMachinesIndex], States.cluster.proposers);
       })
   }

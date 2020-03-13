@@ -19,7 +19,7 @@ export function setGraphicSize(graphicWidth, graphicHeight) {
 export function draw() {
   console.log('Draw::draw', stateNumber);
 
-  
+
 }
 
 export function drawPageTitle(stateNumber) {
@@ -43,10 +43,10 @@ export function drawPageTitle(stateNumber) {
         return 0 + 'px';
       }
     });
-  
+
     d3.select('#title h1')
       .style('font-size', (stateNumber == 0 ? CONSTANTS.PAGE_TITLE_FONT_SIZE_0 : CONSTANTS.PAGE_TITLE_FONT_SIZE_1) + 'pt');
-    
+
     d3.select('#title h4')
       .style('font-size', (stateNumber == 0 ? CONSTANTS.PAGE_AUTHORS_FONT_SIZE_0 : CONSTANTS.PAGE_AUTHORS_FONT_SIZE_1) + 'pt');
 }
@@ -74,6 +74,41 @@ export function drawCircles(stateNumber) {
     .attr('opacity', d => d.opacity)
     .attr('stroke', d => d.stroke)
     .attr('fill', d => d3.scaleLinear().domain([0,1]).range(['white', d.fill])(CONSTANTS.CIRCLE_FILL_RATIO));
+}
+
+export function drawCircleValues(stateNumber, machines) {
+  console.log('Draw::drawCircleValues', stateNumber, machines);
+  // create if hasn't exist yet
+  d3.select('#paxos svg').selectAll('.value')
+    .data(state)
+    .enter()
+    .append('text')
+    .classed('value', true)
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'middle')
+    .style('font-size', CONSTANTS.CIRCLE_VALUE_FONT_SIZE)
+    .attr('id', (d, i) => 'value' + i)
+    .attr('x', (d, i) => state[i].x * width)
+    .attr('y', (d, i) => state[i].y * height)
+    .text((d, i) => {
+      switch(d.class) {
+        case 'server proposer':
+          return machines[i].proposerProposalNumber + ', ' + 'null';
+        case 'server acceptor':
+          return '-1, null';
+        case 'server learner':
+          return 'null';
+      }
+    });
+}
+
+export function updateCircleValue(stateNumber, machineNumber, value, consensus = false) {
+  console.log('Draw::updateCircleValue', stateNumber, machineNumber, value, consensus);
+
+  // update value
+  d3.select('#value' + machineNumber)
+    .text(value)
+    .style('fill', consensus ? 'black': 'red')
 }
 
 export function drawCircleLabels(stateNumber) {
@@ -276,7 +311,7 @@ export function drawPrev() {
     .attr('dominant-baseline', 'middle')
     .style('font-size', CONSTANTS.BUTTON_FONT_SIZE)
     .attr('opacity', CONSTANTS.BUTTON_DISABLED_OPACITY);
-    
+
   d3.select('#paxos svg').selectAll('.prev')
     .transition()
     .duration(CONSTANTS.STATE_TRANSITION_MS)
