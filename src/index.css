@@ -1,0 +1,86 @@
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#title h1 {
+    font-family: 'IBM Plex Sans';
+    font-weight: 700;
+    margin: 0rem;
+}
+
+#title h4 {
+    font-family: 'IBM Plex Sans';
+    font-weight: 400;
+    font-style: normal;
+    margin: 0rem;
+}
+
+#title {
+    display: inline;
+    position: fixed;
+    top: 40%;
+    left: 20%;
+
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+#paxos {
+    display: inline-block;
+    position: fixed;
+    top: 0px;
+    left: 10%;
+    height: 100%;
+    width: 80%;
+}
+
+#paxos text{
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+#paxos .title {
+    font-family: 'IBM Plex Sans';
+    font-weight: 700;
+    font-style: italic;
+}
+
+#paxos .subtitle {
+    font-family: 'IBM Plex Sans';
+    font-weight: 400;
+}
+
+#paxos .label {
+    font-family: 'IBM Plex Sans';
+    font-weight: 400;
+}
+
+#paxos .message {
+    fill: lightsalmon;
+}
+
+#paxos .glow {
+    fill: gold;
+}
+
+#paxos rect.button {
+    fill: lightgrey;
+}
+
+#paxos text.button {
+    font-family: 'IBM Plex Mono';
+    font-weight: 400;
+    font-style: italic;
+    color: black;
+}

@@ -1,24 +1,103 @@
 
+const d3 = require('d3');
+const statesData = require('../data/states.csv');
+const captionsData = require('../data/captions.csv');
+const messageData = require('../data/messages.csv');
+import * as CONSTANTS from './constants.js';
+import States from './states.js';
 
-// You can require libraries
-const d3 = require('d3')
+window.onload = init;
+window.onresize = resize;
 
-// You can include local JS files:
-const MyClass = require('./my-class');
-const myClassInstance = new MyClass();
-myClassInstance.sayHi();
+function init() {
+  console.log('init');
 
+  resize();
 
-// You can load JSON files directly via require.
-// Note this does not add a network request, it adds
-// the data directly to your JavaScript bundle.
-const exampleData = require('./example-data.json');
+  States
+    .import(statesData, 'states')
+    .then(() => States.import(captionsData, 'captions')
+    .then(() => States.import(messageData, 'messages'))
+    .then(() => start()));
+}
 
+let screenWidth, screenHeight;
+let graphicWidth, graphicHeight;
 
-// Anything you put in the static folder will be available
-// over the network, e.g.
-d3.csv('carbon-emissions.csv')
-  .then((data) => {
-    console.log('Dynamically loaded CSV data', data);
-  })
+function resize() {
+  console.log('resize');
 
+  screenWidth = window.innerWidth;
+  screenHeight = window.innerHeight;
+  graphicWidth = screenWidth * CONSTANTS.GRAPHIC_TO_SCREEN_WIDTH_RATIO;
+  graphicHeight = screenHeight * CONSTANTS.GRAPHIC_TO_SCREEN_HEIGHT_RATIO;
+
+  if (States.states != undefined) {
+    update();
+  }
+}
+
+function start() {
+  console.log('start');
+
+  d3.select('body')
+  .on('wheel', () => {
+    currentState += d3.event.wheelDelta < 0 ? 1 : -1;
+    currentState = Math.max(0, currentState);
+    update();
+  });
+
+  update();
+
+  d3.select('#paxos svg').selectAll('.prev')
+    .on('click', d => {
+      if (d.prevenabled) {
+        currentState--;
+        update();
+      }
+    })
+    .on('mouseover', function (d) {
+      if (d.prevenabled) {
+        d3.select(this).style('cursor', 'pointer')
+      } else {
+        d3.select(this).style('cursor', 'default')
+      }
+    })
+  
+    d3.select('#paxos svg').selectAll('.next')
+    .on('click', d => {
+      if (d.nextenabled) {
+        currentState++;
+        update();
+      }
+    })
+    .on('mouseover', function(d) {
+      if (d.nextenabled) {
+        d3.select(this).style('cursor', 'pointer')
+      } else {
+        d3.select(this).style('cursor', 'default')
+      }
+    })
+
+    d3.select('#paxos svg').selectAll('.reset')
+      .on('click', d => {
+        if (d.resetenabled) {
+          States.cluster.reset();
+          update();
+        }
+      })
+      .on('mouseover', function(d) {
+        if (d.resetenabled) {
+          d3.select(this).style('cursor', 'pointer')
+        } else {
+          d3.select(this).style('cursor', 'default')
+        }
+      })
+}
+
+let currentState = 13;
+function update() {
+  console.log('update');
+
+  States.update(currentState, graphicWidth, graphicHeight);
+}
