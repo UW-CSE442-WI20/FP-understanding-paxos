@@ -9,10 +9,12 @@ class States {
 
   static import(data, out) {
     States[out] = [];
-    return d3.csv(data).then(d => {
+    return d3.tsv(data).then(d => {
 
       for (let i in d) {
         let row = d[i];
+
+        console.log(row);
 
         if (States[out][+row['state:int']] === undefined) {
           States[out][+row['state:int']] = [];
@@ -46,7 +48,7 @@ class States {
     console.log('States::update', stateNumber);
 
     Draw.setGraphicSize(graphicWidth, graphicHeight);
-    Draw.set(stateNumber, States.states[stateNumber], States.messages[stateNumber], States.captions[stateNumber]);
+    Draw.setState(stateNumber, States.states[stateNumber], States.messages[stateNumber], States.captions[stateNumber]);
 
     Draw.reset();
 
@@ -61,12 +63,12 @@ class States {
       .end()
       .then(() => {
         switch(stateNumber) {
-          case 14: {
-            States.cluster = new PaxosCluster(14, States.states[14]);
+          case 21: {
+            States.cluster = new PaxosCluster(21, States.states[21]);
             Draw.drawCircleValues(stateNumber, States.cluster.machines);
-            States.setupListeners(14);
+            States.setupListeners(21);
             States.cluster.clients.forEach(client => {
-              Draw.drawGlow(14, States.cluster.machines.indexOf(client));
+              Draw.drawGlow(21, States.cluster.machines.indexOf(client));
             });
             break;
           }

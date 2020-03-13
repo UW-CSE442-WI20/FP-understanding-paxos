@@ -1,8 +1,8 @@
 
 const d3 = require('d3');
-const statesData = require('../data/states.csv');
-const captionsData = require('../data/captions.csv');
-const messageData = require('../data/messages.csv');
+const statesData = require('../data/states.txt');
+const captionsData = require('../data/captions.txt');
+const messageData = require('../data/messages.txt');
 import * as CONSTANTS from './constants.js';
 import States from './states.js';
 
@@ -40,14 +40,22 @@ function resize() {
 function start() {
   console.log('start');
 
+  update();
+
+  setupStateListeners();
+
+  // console.log(States.states);
+  // console.log(States.captions);
+  // console.log(States.messages);
+}
+
+function setupStateListeners() {
   d3.select('body')
   .on('wheel', () => {
     currentState += d3.event.wheelDelta < 0 ? 1 : -1;
     currentState = Math.max(0, currentState);
     update();
   });
-
-  update();
 
   d3.select('#paxos svg').selectAll('.prev')
     .on('click', d => {
@@ -63,8 +71,8 @@ function start() {
         d3.select(this).style('cursor', 'default')
       }
     })
-  
-    d3.select('#paxos svg').selectAll('.next')
+
+  d3.select('#paxos svg').selectAll('.next')
     .on('click', d => {
       if (d.nextenabled) {
         currentState++;
@@ -79,23 +87,23 @@ function start() {
       }
     })
 
-    d3.select('#paxos svg').selectAll('.reset')
-      .on('click', d => {
-        if (d.resetenabled) {
-          States.cluster.reset();
-          update();
-        }
-      })
-      .on('mouseover', function(d) {
-        if (d.resetenabled) {
-          d3.select(this).style('cursor', 'pointer')
-        } else {
-          d3.select(this).style('cursor', 'default')
-        }
-      })
+  d3.select('#paxos svg').selectAll('.reset')
+    .on('click', d => {
+      if (d.resetenabled) {
+        States.cluster.reset();
+        update();
+      }
+    })
+    .on('mouseover', function(d) {
+      if (d.resetenabled) {
+        d3.select(this).style('cursor', 'pointer')
+      } else {
+        d3.select(this).style('cursor', 'default')
+      }
+    })
 }
 
-let currentState = 13;
+let currentState = 0;
 function update() {
   console.log('update');
 

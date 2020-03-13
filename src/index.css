@@ -56,7 +56,7 @@ body {
     font-style: italic;
 }
 
-#paxos .subtitle {
+#paxos .subtitle1, .subtitle2, .subtitle3, .subtitle4 {
     font-family: 'IBM Plex Sans';
     font-weight: 400;
 }
