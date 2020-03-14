@@ -34,11 +34,13 @@ class PaxosMachine {
           case 'client request': {
             if (this.proposerValue == undefined) {
               this.proposerValue = message.value;
-              this.proposerVoters = [];
+              this.proposerProposalVoters = [];
+              this.proposerAcceptVoters = [];
               // TODO: send prepare requests to all acceptors (p1a)
               let p1a = {type: 'prepare request', proposalNumber: this.proposerProposalNumber, sender: this};
 
-              Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue, false);
+              Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue + ', ' + this.proposerProposalVoters.length + '/' + this.cluster.acceptors.length + ', ' + this.proposerAcceptVoters.length + '/' + this.cluster.acceptors.length, false);
+
               this.cluster.send(p1a, this, this.cluster.acceptors);
             }
             break;
@@ -48,10 +50,11 @@ class PaxosMachine {
           case 'prepare response': {  // p1b
             if (message.status == 'fail') {
               this.proposerProposalNumber += this.cluster.proposers.length;
-              this.proposerVoters = [];
+              this.proposerProposalVoters = [];
+              this.proposerAcceptVoters = [];
               // TODO: resend p1a
               let p1a = {type: 'prepare request', proposalNumber: this.proposerProposalNumber, sender: this};
-              Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue, false);
+              Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue + ', ' + this.proposerProposalVoters.length + '/' + this.cluster.acceptors.length + ', ' + this.proposerAcceptVoters.length + '/' + this.cluster.acceptors.length, false);
               this.cluster.send(p1a, this, this.cluster.acceptors);
 
             } else if (message.status == 'success') {
@@ -60,16 +63,18 @@ class PaxosMachine {
                 this.proposerValue = message.value;
               }
 
-              if (!(message.sender in this.proposerVoters)) {
-                this.proposerVoters.push(message.sender);
+              if (!(message.sender in this.proposerProposalVoters)) {
+                this.proposerProposalVoters.push(message.sender);
                 // majority consensus
-                if (this.proposerVoters.length > this.cluster.acceptors.length / 2) {
+                if (this.proposerProposalVoters.length == Math.floor(this.cluster.acceptors.length / 2) + 1) {
                   // TODO: send p2a to all acceptors
-                  this.proposerVoters = [];
+                  this.proposerAcceptVoters = [];
                   let p2a = {type: 'accept request', value: this.proposerValue, proposalNumber: this.proposerProposalNumber, sender: this};
+                  Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue + ', ' + this.proposerProposalVoters.length + '/' + this.cluster.acceptors.length + ', ' + this.proposerAcceptVoters.length + '/' + this.cluster.acceptors.length, false);
 
                   this.cluster.send(p2a, this, this.cluster.acceptors);
                 } else {
+                  Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue + ', ' + this.proposerProposalVoters.length + '/' + this.cluster.acceptors.length + ', ' + this.proposerAcceptVoters.length + '/' + this.cluster.acceptors.length, false);
                   this.cluster.updateListeners();
                 }
               }
@@ -81,24 +86,28 @@ class PaxosMachine {
           case 'accept response': {  // p2b
             if (message.status == 'fail') {
               this.proposerProposalNumber += this.cluster.proposers.length;
-              this.proposerVoters = [];
+              this.proposerProposalVoters = [];
+              this.proposerAcceptVoters = [];
               // TODO: resend p1a
               let p1a = {type: 'prepare request', proposalNumber: this.proposerProposalNumber, sender: this};
-              Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue, false);
+              Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue + ', ' + this.proposerProposalVoters.length + '/' + this.cluster.acceptors.length + ', ' + this.proposerAcceptVoters.length + '/' + this.cluster.acceptors.length, false);
 
               this.cluster.send(p1a, this, this.cluster.acceptors);
             } else if (message.status == 'success') {
-              if (!(message.sender in this.proposerVoters)) {
-                this.proposerVoters.push(message.sender);
+              if (!(message.sender in this.proposerAcceptVoters)) {
+                this.proposerAcceptVoters.push(message.sender);
                 // majority consensus
-                if (this.proposerVoters.length > this.cluster.acceptors.length / 2) {
-                  this.proposerVoters = [];
+                if (this.proposerAcceptVoters.length == Math.floor(this.cluster.acceptors.length / 2) + 1) {
                   // TODO: send value to learners
                   let learnerMessage = {value: this.proposerValue};
+                  Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue + ', ' + this.proposerProposalVoters.length + '/' + this.cluster.acceptors.length + ', ' + this.proposerAcceptVoters.length + '/' + this.cluster.acceptors.length, true);
 
-                  Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue, true);
                   this.cluster.send(learnerMessage, this, this.cluster.learners);
+                } else if (this.proposerAcceptVoters > this.cluster.acceptors.length / 2) {
+                  Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue + ', ' + this.proposerProposalVoters.length + '/' + this.cluster.acceptors.length + ', ' + this.proposerAcceptVoters.length + '/' + this.cluster.acceptors.length, true);
+                  this.cluster.updateListeners();
                 } else {
+                  Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue + ', ' + this.proposerProposalVoters.length + '/' + this.cluster.acceptors.length + ', ' + this.proposerAcceptVoters.length + '/' + this.cluster.acceptors.length, false);
                   this.cluster.updateListeners();
                 }
               }

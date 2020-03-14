@@ -116,8 +116,8 @@ export function updateCircleValue(stateNumber, machineNumber, value, consensus =
   // update value
   d3.select('#value' + machineNumber)
     .text(value)
-    .classed('consensus', consensus)
-    // .style('fill', consensus ? 'black': 'red')
+    // .classed('consensus', consensus)
+    .style('fill', consensus ? 'black': 'red')
 }
 
 export function drawCircleLabels(stateNumber) {
