@@ -219,3 +219,13 @@ state:int	x:float	y:float	r:int	stroke:string	fill:string	opacity:float	class:st
 21	0.5	0.5	0	black	white	0	client		0
 21	0.5	0.5	0	black	white	0	client		0
 21	0.5	0.5	0	black	white	0	client		0
+22	0.5	0.8	50	black	white	1	client	Client	1
+22	0.15	0.2	50	cadetblue	cadetblue	1	server proposer	Proposer 1	1
+22	0.15	0.438564065	50	cadetblue	cadetblue	1	server proposer	Proposer 2	1
+22	0.15	0.66	50	cadetblue	cadetblue	1	server proposer	Proposer 3	1
+22	0.5	0.2	50	mediumslateblue	mediumslateblue	1	server acceptor	Acceptor 1	1
+22	0.5	0.438564065	50	mediumslateblue	mediumslateblue	1	server acceptor	Acceptor 2	1
+22	0.5	0.66	50	mediumslateblue	mediumslateblue	1	server acceptor	Acceptor 3	1
+22	0.85	0.2	50	hotpink	hotpink	1	server learner	Learner 1	1
+22	0.85	0.438564065	50	hotpink	hotpink	1	server learner	Learner 2	1
+22	0.85	0.66	50	hotpink	hotpink	1	server learner	Learner 3	1

@@ -18,6 +18,7 @@ class PaxosMachine {
   }
 
   handle(message) {
+    console.log('PaxosMachine::handle', message, this);
     // reset listener
     // this.machineIndex = this.cluster.machines.indexOf(this);
     switch(this.role) {
@@ -68,6 +69,8 @@ class PaxosMachine {
                   let p2a = {type: 'accept request', value: this.proposerValue, proposalNumber: this.proposerProposalNumber, sender: this};
 
                   this.cluster.send(p2a, this, this.cluster.acceptors);
+                } else {
+                  this.cluster.updateListeners();
                 }
               }
             }
@@ -89,11 +92,14 @@ class PaxosMachine {
                 this.proposerVoters.push(message.sender);
                 // majority consensus
                 if (this.proposerVoters.length > this.cluster.acceptors.length / 2) {
+                  this.proposerVoters = [];
                   // TODO: send value to learners
                   let learnerMessage = {value: this.proposerValue};
 
                   Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue, true);
                   this.cluster.send(learnerMessage, this, this.cluster.learners);
+                } else {
+                  this.cluster.updateListeners();
                 }
               }
             }
@@ -113,9 +119,10 @@ class PaxosMachine {
               Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.acceptorProposalNumber + ', ' + this.acceptorValue, true);
               this.cluster.send(p1b, this, [message.sender]);
             } else {
+              this.cluster.updateListeners();
               // send fail prepare response
-              let p1b = {type: 'prepare response', status: 'fail'};
-              this.cluster.send(p1b, this, [message.sender]);
+              // let p1b = {type: 'prepare response', status: 'fail'};
+              // this.cluster.send(p1b, this, [message.sender]);
             }
             break;
           }
@@ -130,9 +137,10 @@ class PaxosMachine {
               Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.acceptorProposalNumber + ', ' + this.acceptorValue, true);
               this.cluster.send(p2b, this, [message.sender]);
               } else {
-                // send fail accept response
-                let p2b = {type: 'accept response', status: 'fail'};
-                this.cluster.send(p2b, this, [message.sender]);
+                this.cluster.updateListeners();
+                // // send fail accept response
+                // let p2b = {type: 'accept response', status: 'fail'};
+                // this.cluster.send(p2b, this, [message.sender]);
               }
               break;
           }
@@ -231,6 +239,9 @@ class PaxosCluster {
   }
 
   updateListeners() {
+    if (!this.step) {
+      return;
+    }
     console.log('PaxosCluster::updateListeners', this.sendMap);
 
     // reset glow
@@ -244,15 +255,15 @@ class PaxosCluster {
         .on('click', function() {
           d3.select('#paxos svg').selectAll('#server' + key + ', #value' + key).on('click', null);
           let v = that.sendMap[key];
+          delete that.sendMap[key];
           for (let i in v.sendees) {
             Draw.drawMessage(that.stateNum, key, v.sendees[i], CONSTANTS.MESSAGE_DURATION_MS, function() {
               // validate
               if (v.message.sequenceNum == that.sequenceNum) {
-                  that.machines[v.sendees[i]].handle(v.message);
+                that.machines[v.sendees[i]].handle(v.message);
               }
             });
           }
-          delete that.sendMap[key];
         })
     }
   }
