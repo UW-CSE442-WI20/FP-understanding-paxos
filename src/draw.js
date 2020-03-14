@@ -116,7 +116,7 @@ export function updateCircleValue(stateNumber, machineNumber, value, consensus =
   // update value
   d3.select('#value' + machineNumber)
     .text(value)
-    .classed('consensus', consensus)
+    // .classed('consensus', consensus)
     // .style('fill', consensus ? 'black': 'red')
 }
 
@@ -179,7 +179,7 @@ export function drawMessage(stateNumber, sender, sendee, duration, deliveredCall
     .moveToBack()
     .transition()
     .duration(duration + Math.random() * noisems)
-    .ease(d3.easeQuad)
+    .ease(d3.easeLinear)
     .attr('cx', state[sendee].x * width)
     .attr('cy', state[sendee].y * height)
     .remove()
