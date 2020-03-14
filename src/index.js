@@ -46,12 +46,12 @@ function start() {
 }
 
 function setupStateListeners() {
-  d3.select('body')
-  .on('wheel', () => {
-    currentState += d3.event.wheelDelta < 0 ? 1 : -1;
-    currentState = Math.min(Math.max(0, currentState), States.states.length - 1);
-    update();
-  });
+  // d3.select('body')
+  // .on('wheel', () => {
+  //   currentState += d3.event.wheelDelta < 0 ? 1 : -1;
+  //   currentState = Math.min(Math.max(0, currentState), States.states.length - 1);
+  //   update();
+  // });
 
   d3.select('#paxos svg').selectAll('.prev')
     .on('click', d => {

@@ -32,7 +32,7 @@ class PaxosMachine {
       case 'client': {
         this.clientValue = message.value;
         Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.clientValue, true);
-        this.cluster.updateListeners();
+        this.cluster.updateListeners(message);
         break;
       }
       case 'proposer': {
@@ -82,7 +82,7 @@ class PaxosMachine {
                   this.cluster.send(p2a, this, this.cluster.acceptors);
                 } else {
                   Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue + ', ' + this.proposerProposalVoters.length + '/' + this.cluster.acceptors.length + ', ' + this.proposerAcceptVoters.length + '/' + this.cluster.acceptors.length, false);
-                  this.cluster.updateListeners();
+                  this.cluster.updateListeners(message);
                 }
               }
             }
@@ -112,10 +112,10 @@ class PaxosMachine {
                   this.cluster.send(learnerMessage, this, this.cluster.learners);
                 } else if (this.proposerAcceptVoters.length > this.cluster.acceptors.length / 2) {
                   Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue + ', ' + this.proposerProposalVoters.length + '/' + this.cluster.acceptors.length + ', ' + this.proposerAcceptVoters.length + '/' + this.cluster.acceptors.length, true);
-                  this.cluster.updateListeners();
+                  this.cluster.updateListeners(message);
                 } else {
                   Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.proposerProposalNumber + ', ' + this.proposerValue + ', ' + this.proposerProposalVoters.length + '/' + this.cluster.acceptors.length + ', ' + this.proposerAcceptVoters.length + '/' + this.cluster.acceptors.length, false);
-                  this.cluster.updateListeners();
+                  this.cluster.updateListeners(message);
                 }
               }
             }
@@ -135,7 +135,7 @@ class PaxosMachine {
               Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.acceptorProposalNumber + ', ' + this.acceptorValue, true);
               this.cluster.send(p1b, this, [message.sender]);
             } else {
-              this.cluster.updateListeners();
+              this.cluster.updateListeners(message);
               // send fail prepare response
               // let p1b = {type: 'prepare response', status: 'fail'};
               // this.cluster.send(p1b, this, [message.sender]);
@@ -153,7 +153,7 @@ class PaxosMachine {
               Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.acceptorProposalNumber + ', ' + this.acceptorValue, true);
               this.cluster.send(p2b, this, [message.sender]);
               } else {
-                this.cluster.updateListeners();
+                this.cluster.updateListeners(message);
                 // // send fail accept response
                 // let p2b = {type: 'accept response', status: 'fail'};
                 // this.cluster.send(p2b, this, [message.sender]);
@@ -167,7 +167,7 @@ class PaxosMachine {
         this.learnerValue = message.value;
         // send value to client
         Draw.updateCircleValue(this.cluster.stateNum, this.machineIndex, this.learnerValue, true);
-        this.cluster.send({value: this.learnerValue}, this, [message.client]);
+        this.cluster.send({value: this.learnerValue, client:message.client}, this, [message.client]);
         break;
       }
     }
@@ -241,7 +241,7 @@ class PaxosCluster {
     sendees = sendees.map(s => this.machines.indexOf(s));
     if (this.step && this.machines[sender].role !== 'client') {
       this.sendMap[sender] = {sendees: sendees, message: message};
-      this.updateListeners();
+      this.updateListeners(message);
       return;
     }
 
@@ -250,16 +250,26 @@ class PaxosCluster {
         continue;
       }
       let that = this;
-      Draw.drawMessage(this.stateNum, sender, sendees[i], CONSTANTS.MESSAGE_DURATION_MS, function() {
-        // validate
-        if (message.sequenceNum == that.sequenceNum) {
-            that.machines[sendees[i]].handle(message);
-        }
-      }, CONSTANTS.MESSAGE_LATENCY_MS);
+      console.log(message)
+      if (this.stateNum == 23) {
+        Draw.drawMessage(this.stateNum, sender, sendees[i], CONSTANTS.MESSAGE_DURATION_SLOW_MS, this.clients.indexOf(message.client) + 1, function() {
+          // validate
+          if (message.sequenceNum == that.sequenceNum) {
+              that.machines[sendees[i]].handle(message);
+          }
+        }, CONSTANTS.MESSAGE_LATENCY_LARGE_MS);
+      } else {
+        Draw.drawMessage(this.stateNum, sender, sendees[i], CONSTANTS.MESSAGE_DURATION_FAST_MS, this.clients.indexOf(message.client) + 1, function() {
+          // validate
+          if (message.sequenceNum == that.sequenceNum) {
+              that.machines[sendees[i]].handle(message);
+          }
+        }, CONSTANTS.MESSAGE_LATENCY_SMALL_MS);
+      }
     }
   }
 
-  updateListeners() {
+  updateListeners(message) {
     if (!this.step) {
       return;
     }
@@ -281,12 +291,21 @@ class PaxosCluster {
             if (v.sendees[i].killed) {
               continue;
             }
-            Draw.drawMessage(that.stateNum, key, v.sendees[i], CONSTANTS.MESSAGE_DURATION_MS, function() {
-              // validate
-              if (v.message.sequenceNum == that.sequenceNum) {
-                that.machines[v.sendees[i]].handle(v.message);
-              }
-            }, CONSTANTS.MESSAGE_LATENCY_MS);
+            if (that.stateNum == 23) {
+              Draw.drawMessage(that.stateNum, key, v.sendees[i], CONSTANTS.MESSAGE_DURATION_SLOW_MS, that.clients.indexOf(message.client) + 1, function() {
+                // validate
+                if (v.message.sequenceNum == that.sequenceNum) {
+                  that.machines[v.sendees[i]].handle(v.message);
+                }
+              }, CONSTANTS.MESSAGE_LATENCY_LARGE_MS);
+            } else {
+              Draw.drawMessage(that.stateNum, key, v.sendees[i], CONSTANTS.MESSAGE_DURATION_FAST_MS, that.clients.indexOf(message.client) + 1, function() {
+                // validate
+                if (v.message.sequenceNum == that.sequenceNum) {
+                  that.machines[v.sendees[i]].handle(v.message);
+                }
+              }, CONSTANTS.MESSAGE_LATENCY_SMALL_MS);
+            }
           }
         })
     }
