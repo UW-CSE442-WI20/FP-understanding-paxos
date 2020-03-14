@@ -70,7 +70,7 @@ export function drawCircles(stateNumber) {
     .attr('fill', d => d3.scaleLinear().domain([0,1]).range(['white', d.fill])(CONSTANTS.CIRCLE_FILL_RATIO));
 }
 
-export function drawCircleValues(stateNumber, machines) {
+export function drawCircleValues(stateNumber, machines = null) {
   console.log('Draw::drawCircleValues', stateNumber, machines);
 
   // create if necessary
@@ -87,13 +87,17 @@ export function drawCircleValues(stateNumber, machines) {
     .attr('y', (d, i) => d.y * height)
     .text((d, i) => {
       if (d.showvalue) {
-        switch(d.class) {
-          case 'server proposer':
-            return machines[i].proposerProposalNumber + ', ' + 'null';
-          case 'server acceptor':
-            return '-1, null';
-          case 'server learner':
-            return 'null';
+        if (machines == null) {
+          // put logic here ?
+        } else {
+          switch(d.class) {
+            case 'server proposer':
+              return machines[i].proposerProposalNumber + ', ' + 'null';
+            case 'server acceptor':
+              return '-1, null';
+            case 'server learner':
+              return 'null';
+          }
         }
       }
     })
@@ -112,7 +116,8 @@ export function updateCircleValue(stateNumber, machineNumber, value, consensus =
   // update value
   d3.select('#value' + machineNumber)
     .text(value)
-    .style('fill', consensus ? 'black': 'red')
+    .classed('consensus', consensus)
+    // .style('fill', consensus ? 'black': 'red')
 }
 
 export function drawCircleLabels(stateNumber) {
@@ -233,7 +238,7 @@ export function drawSubtitle(stateNumber) {
     .attr('opacity', d => d['opacity'])
 }
 
-export function drawMessage(stateNumber, sender, sendee, duration, deliveredCallback = null) {
+export function drawMessage(stateNumber, sender, sendee, duration, deliveredCallback = null, noisems=0) {
   console.log('Draw::drawMessage', stateNumber, sender, sendee, duration, deliveredCallback);
 
   d3.select('#paxos svg')
@@ -244,7 +249,7 @@ export function drawMessage(stateNumber, sender, sendee, duration, deliveredCall
     .attr('r', CONSTANTS.MESSAGE_RADIUS_PX)
     .moveToBack()
     .transition()
-    .duration(duration)
+    .duration(duration + Math.random() * noisems)
     .ease(d3.easeQuad)
     .attr('cx', state[sendee].x * width)
     .attr('cy', state[sendee].y * height)
@@ -266,14 +271,20 @@ export function drawMessages(stateNumber) {
   }
 
   // make all senders clickable
+  // make all senders display their message value
+  // make all sendees display received message value
   for (let i in messages) {
     let message = messages[i];
 
+    updateCircleValue(stateNumber, message.sender, message.message, false);
+
     // send messages on click
-    d3.select('#paxos svg').select('#server' + message.sender)
+    d3.select('#paxos svg').selectAll('#server' + message.sender + ',#value' + message.sender)
       .on('click', function() {
         for (let j in message.sendee) {
-          drawMessage(stateNumber, message.sender, message.sendee[j], CONSTANTS.MESSAGE_DURATION_MS);
+          drawMessage(stateNumber, message.sender, message.sendee[j], CONSTANTS.MESSAGE_DURATION_MS, function() {
+            updateCircleValue(stateNumber, message.sendee[j], message.message, false)
+          }, 1000);
         }
       });
   }

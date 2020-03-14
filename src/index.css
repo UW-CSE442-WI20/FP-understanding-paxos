@@ -84,3 +84,15 @@ body {
     font-style: italic;
     color: black;
 }
+
+#paxos .value {
+    font-family: 'IBM Plex Mono';
+    font-weight: 400;
+    font-size: 12pt;
+    font-style: italic;
+    fill:  black;
+}
+
+#paxos .consensus {
+    font-weight: 500;
+}

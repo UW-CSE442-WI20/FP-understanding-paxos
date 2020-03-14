@@ -43,10 +43,6 @@ function start() {
   update();
 
   setupStateListeners();
-
-  // console.log(States.states);
-  // console.log(States.captions);
-  // console.log(States.messages);
 }
 
 function setupStateListeners() {
@@ -90,8 +86,17 @@ function setupStateListeners() {
   d3.select('#paxos svg').selectAll('.reset')
     .on('click', d => {
       if (d.resetenabled) {
-        States.cluster.reset();
-        update();
+        switch(currentState) {
+          case 21: {
+            States.cluster.reset();
+            update();
+            break;
+          }
+          default: {
+            update();
+            break;
+          }
+        }
       }
     })
     .on('mouseover', function(d) {

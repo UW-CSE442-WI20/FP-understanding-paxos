@@ -1,6 +1,7 @@
 
 const d3 = require('d3');
 import * as Draw from './draw.js';
+import * as CONSTANTS from './constants.js';
 import PaxosCluster from './paxos.js';
 
 class States {
@@ -13,8 +14,6 @@ class States {
 
       for (let i in d) {
         let row = d[i];
-
-        console.log(row);
 
         if (States[out][+row['state:int']] === undefined) {
           States[out][+row['state:int']] = [];
@@ -72,7 +71,19 @@ class States {
             });
             break;
           }
+          case 6: {
+            Draw.drawCircleValues(stateNumber, null);
+            // Draw.drawMessages(stateNumber);
+            States.setup6();
+            States.messages[stateNumber].forEach(message => {
+              if (message.sender != 5) {
+                Draw.drawGlow(stateNumber, message.sender);
+              }
+            });
+            break;
+          }
           default: {
+            Draw.drawCircleValues(stateNumber, null);
             Draw.drawMessages(stateNumber);
             States.messages[stateNumber].forEach(message => {
               Draw.drawGlow(stateNumber, message.sender);
@@ -94,6 +105,49 @@ class States {
         Draw.updateCircleValue(States.cluster.stateNum, clientMachinesIndex, clientRequest.value, false);
         States.cluster.send(clientRequest, States.cluster.machines[clientMachinesIndex], States.cluster.proposers);
       })
+  }
+
+  static setup6() {
+    console.log('Sates::setup6');
+
+    let messages = States.messages[6];
+
+    let broadcast;
+    let fixed = false;
+    
+    for (let i in messages) {
+      let message = messages[i];
+
+      if (message.sender == 5) {
+        broadcast = message;
+        continue;
+      }
+      
+      Draw.updateCircleValue(States.stateNumber, message.sender, message.message, false);
+
+      // send messages on click
+      d3.select('#paxos svg').selectAll('#server' + message.sender + ',#value' + message.sender)
+        .on('click', function() {
+          for (let j in message.sendee) {
+            Draw.drawMessage(States.stateNumber, message.sender, message.sendee[j], CONSTANTS.MESSAGE_DURATION_MS, function() {
+              if (fixed) {
+                return;
+              }
+              fixed = true;
+              Draw.updateCircleValue(States.stateNumber, message.sendee[j], message.message, false);
+              Draw.drawGlow(States.stateNumber, message.sendee[j]);
+              d3.select('#paxos svg').selectAll('#server' + message.sendee[j] + ',#value' + message.sendee[j])
+                .on('click', function() {
+                  for (let k in broadcast.sendee) {
+                    Draw.drawMessage(States.stateNumber, broadcast.sender, broadcast.sendee[k], CONSTANTS.MESSAGE_DURATION_MS, function() {
+                      Draw.updateCircleValue(States.stateNumber, broadcast.sendee[k], message.message, false);
+                    }, 0);
+                  }
+                });
+            }, 1000);
+          }
+        });
+    }
   }
 
 }
