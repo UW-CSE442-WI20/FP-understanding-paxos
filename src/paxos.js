@@ -234,7 +234,7 @@ class PaxosCluster {
         if (message.sequenceNum == that.sequenceNum) {
             that.machines[sendees[i]].handle(message);
         }
-      });
+      }, CONSTANTS.MESSAGE_LATENCY_MS);
     }
   }
 
@@ -262,7 +262,7 @@ class PaxosCluster {
               if (v.message.sequenceNum == that.sequenceNum) {
                 that.machines[v.sendees[i]].handle(v.message);
               }
-            });
+            }, CONSTANTS.MESSAGE_LATENCY_MS);
           }
         })
     }

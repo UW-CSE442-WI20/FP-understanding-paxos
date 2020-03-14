@@ -149,7 +149,7 @@ class States {
                     }, 0);
                   }
                 });
-            }, 1000);
+            }, CONSTANTS.MESSAGE_LATENCY_MS);
           }
         });
     }
