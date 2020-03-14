@@ -95,8 +95,12 @@ body {
     font-weight: 400;
 }
 
-#paxos .message {
+#paxos .message.client1 {
     fill: lightsalmon;
+}
+
+#paxos .message.client2 {
+    fill: lightseagreen;
 }
 
 #paxos .glow {

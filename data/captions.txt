@@ -22,4 +22,5 @@ state:int	title:string	subtitle:string	opacity:float	prevenabled:int	nextenabled
 20	Paxos Learn Phase	Once <span class='learner'>learners</span> learn of a client request that a majority of <span class='acceptor'>acceptors</span> has voted on, they are free to service the request and respond to the client, if necessary. Paxos ensures that the elected request will not change, so all <span class='learner'>learners</span> will eventually learn of the same client request and remain in sync. The <span class='learner'>learners</span> are the replicas of a Paxos cluster, so the election process yields a replicated service that can tolerate a significant number of faults. Since Paxos only needs a majority of <span class='acceptor'>acceptors</span> for progress to be made, a Paxos cluster can tolerate up to a minority (half) of <span class='acceptor'>acceptors</span> failing.	1	1	1	1
 21	Paxos Demo	caption for state 21	1	1	1	1
 22	333 Paxos Demo	caption for state 22	1	1	1	1
-23	333 Paxos Demo with kill	caption for state 23	1	1	0	1
+23	333 Paxos Demo with kill	caption for state 23	1	1	1	1
+24	333 Paxos Demo with kill	caption for state 24	1	1	0	1

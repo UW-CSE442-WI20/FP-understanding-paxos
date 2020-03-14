@@ -2,11 +2,11 @@ state:int	sender:int	sendee:array	message:string	ondelivermessage:string	ondeliv
 1	0	[1]	Request1
 3	0	[1 2 3]	Request1
 4	0	[2 3]	Request1
-5	0	[1 2 3]	Request1
-5	4	[1 2 3]	Request2
+5	0	[4 2 3]	Request1
+5	1	[4 2 3]	Request2
 6	0	[5]	Request1
-6	4	[5]	Request2
-6	5	[1 2 3]	
+6	1	[5]	Request2
+6	5	[4 2 3]
 14	0	[1]	Request1	1, Request1, 0/1, 0/1	0
 15	1	[2]	1, Request1	1, null	1
 16	2	[1]	1, null	1, Request1, 1/1, 0/1	0
@@ -18,3 +18,5 @@ state:int	sender:int	sendee:array	message:string	ondelivermessage:string	ondeliv
 22	0	[1 2 3]	Request1
 23	0	[1 2 3]	Request1
 23	1	[1 2 3]	Request2
+24	0	[1 2 3]	Request1
+24	1	[1 2 3]	Request2

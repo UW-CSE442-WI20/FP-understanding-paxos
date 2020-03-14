@@ -13,8 +13,11 @@ export const CIRCLE_DISABLED_OPACITY = 0.2;
 
 
 export const MESSAGE_RADIUS_PX = 20;
-export const MESSAGE_DURATION_MS = 1000;
-export const MESSAGE_LATENCY_MS = 6000;
+export const MESSAGE_DURATION_SLOW_MS = 1000;
+export const MESSAGE_DURATION_FAST_MS = 500;
+export const MESSAGE_LATENCY_LARGE_MS = 4000;
+export const MESSAGE_LATENCY_SMALL_MS = 1000;
+
 
 export const PAGE_TITLE_FONT_SIZE_0 = 36;
 export const PAGE_TITLE_FONT_SIZE_1 = 14;

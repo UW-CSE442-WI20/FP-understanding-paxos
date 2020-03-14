@@ -167,12 +167,13 @@ export function drawSubtitle(stateNumber) {
     .attr('opacity', d => d.opacity)
 }
 
-export function drawMessage(stateNumber, sender, sendee, duration, deliveredCallback = null, noisems=0) {
-  console.log('Draw::drawMessage', stateNumber, sender, sendee, duration, deliveredCallback);
+export function drawMessage(stateNumber, sender, sendee, duration, clientNum, deliveredCallback = null, noisems=0) {
+  console.log('Draw::drawMessage', stateNumber, sender, sendee, duration, clientNum, deliveredCallback);
 
   d3.select('#paxos svg')
     .append('circle')
     .classed('message', true)
+    .classed('client' + clientNum, true)
     .attr('cx', state[sender].x * width)
     .attr('cy', state[sender].y * height)
     .attr('r', CONSTANTS.MESSAGE_RADIUS_PX)
@@ -211,7 +212,7 @@ export function drawMessages(stateNumber) {
     d3.select('#paxos svg').selectAll('#server' + message.sender + ',#value' + message.sender)
       .on('click', function() {
         for (let j in message.sendee) {
-          drawMessage(stateNumber, message.sender, message.sendee[j], CONSTANTS.MESSAGE_DURATION_MS, function() {
+          drawMessage(stateNumber, message.sender, message.sendee[j], CONSTANTS.MESSAGE_DURATION_FAST_MS, message.sender + 1, function() {
             updateCircleValue(stateNumber, message.sendee[j], message.message, false)
           }, CONSTANTS.MESSAGE_LATENCY_MS);
         }

@@ -62,6 +62,7 @@ class States {
       .end()
       .then(() => {
         switch(stateNumber) {
+          case 24:
           case 23:
             States.cluster = new PaxosCluster(stateNumber, States.states[stateNumber], false, true);
             Draw.drawCircleValues(stateNumber, States.cluster.machines);
@@ -210,7 +211,7 @@ class States {
       Draw.drawGlow(stateNumber, message.sender);
       d3.select('#paxos svg').selectAll('#server' + message.sender + ',#value' + message.sender)
         .on('click', function() {
-          Draw.drawMessage(stateNumber, message.sender, message.sendee[0], CONSTANTS.MESSAGE_DURATION_MS, function() {
+          Draw.drawMessage(stateNumber, message.sender, message.sendee[0], CONSTANTS.MESSAGE_DURATION_FAST_MS, 1, function() {
             Draw.updateCircleValue(stateNumber, message.sendee[0], message.ondelivermessage, true);
           })
         });
@@ -239,7 +240,7 @@ class States {
       d3.select('#paxos svg').selectAll('#server' + message.sender + ',#value' + message.sender)
         .on('click', function() {
           for (let j in message.sendee) {
-            Draw.drawMessage(States.stateNumber, message.sender, message.sendee[j], CONSTANTS.MESSAGE_DURATION_MS, function() {
+            Draw.drawMessage(States.stateNumber, message.sender, message.sendee[j], CONSTANTS.MESSAGE_DURATION_FAST_MS, message.sender + 1, function() {
               if (fixed) {
                 return;
               }
@@ -249,7 +250,7 @@ class States {
               d3.select('#paxos svg').selectAll('#server' + message.sendee[j] + ',#value' + message.sendee[j])
                 .on('click', function() {
                   for (let k in broadcast.sendee) {
-                    Draw.drawMessage(States.stateNumber, broadcast.sender, broadcast.sendee[k], CONSTANTS.MESSAGE_DURATION_MS, function() {
+                    Draw.drawMessage(States.stateNumber, broadcast.sender, broadcast.sendee[k], CONSTANTS.MESSAGE_DURATION_FAST_MS, message.sender + 1, function() {
                       Draw.updateCircleValue(States.stateNumber, broadcast.sendee[k], message.message, false);
                     }, 0);
                   }
