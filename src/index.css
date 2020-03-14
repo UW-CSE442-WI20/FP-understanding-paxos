@@ -1,0 +1,136 @@
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#title h1 {
+    font-family: 'IBM Plex Sans';
+    font-weight: 700;
+    margin: 0rem;
+}
+
+#title h4 {
+    font-family: 'IBM Plex Sans';
+    font-weight: 400;
+    font-style: normal;
+    margin: 0rem;
+}
+
+#title {
+    display: inline;
+    position: fixed;
+    top: 40%;
+    left: 10%;
+
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+#paxos {
+    display: inline-block;
+    position: fixed;
+    top: 0%;
+    left: 15%;
+    width: 70%;
+    height: 100%;
+}
+
+#paxos text{
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+#caption {
+    display: inline-block;
+    position: fixed;
+    top: 67%;
+    left: 15%;
+    width: 70%;
+    text-align: justify;
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+}
+
+#caption h1 {
+    font-family: 'IBM Plex Sans';
+    font-weight: 700;
+    font-style: italic;
+    font-size: 20pt;
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+#caption p {
+    font-family: 'IBM Plex Sans';
+    font-weight: 400;
+    font-style: normal;
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+}
+
+#caption .proposer {
+    color: cadetblue;
+}
+
+#caption .acceptor {
+    color: mediumslateblue;
+}
+
+#caption .learner {
+    color: hotpink;
+}
+
+#paxos .label {
+    font-family: 'IBM Plex Sans';
+    font-weight: 400;
+}
+
+#paxos .message {
+    fill: lightseagreen;
+}
+
+#paxos .message.firstClient {
+    fill: lightsalmon;
+}
+
+
+#paxos .glow {
+    fill: gold;
+}
+
+#paxos rect.button {
+    fill: lightgrey;
+}
+
+#paxos text.button {
+    font-family: 'IBM Plex Mono';
+    font-weight: 400;
+    font-style: italic;
+    color: black;
+}
+
+#paxos .value {
+    font-family: 'IBM Plex Mono';
+    font-weight: 400;
+    font-size: 12pt;
+    font-style: italic;
+    fill:  black;
+}
+
+#paxos .consensus {
+    font-weight: 500;
+}
