@@ -83,6 +83,63 @@ class States {
             });
             break;
           }
+          case 14: {
+            Draw.drawCircleValues(stateNumber, null);
+            Draw.updateCircleValue(14, 0, 'Request1', false);
+            Draw.updateCircleValue(14, 1, '1, null, 0/1, 0/1', false);
+            States.setupWalkthrough(14);
+            break;
+          }
+          case 15: {
+            Draw.drawCircleValues(stateNumber, null);
+            Draw.updateCircleValue(15, 0, 'Request1', false);
+            Draw.updateCircleValue(15, 1, '1, Request1, 0/1, 0/1', false);
+            Draw.updateCircleValue(15, 2, '-1, null', false);
+            States.setupWalkthrough(15);
+            break;
+          }
+          case 16: {
+            Draw.drawCircleValues(stateNumber, null);
+            Draw.updateCircleValue(16, 0, 'Request1', false);
+            Draw.updateCircleValue(16, 1, '1, Request1, 0/1, 0/1', false);
+            Draw.updateCircleValue(16, 2, '1, null', false);
+            States.setupWalkthrough(16);
+            break;
+          }
+          case 17: {
+            Draw.drawCircleValues(stateNumber, null);
+            Draw.updateCircleValue(17, 0, 'Request1', false);
+            Draw.updateCircleValue(17, 1, '1, Request1, 1/1, 0/1', false);
+            Draw.updateCircleValue(17, 2, '1, null', false);
+            States.setupWalkthrough(17);
+            break;
+          }
+          case 18: {
+            Draw.drawCircleValues(stateNumber, null);
+            Draw.updateCircleValue(18, 0, 'Request1', false);
+            Draw.updateCircleValue(18, 1, '1, Request1, 1/1, 0/1', false);
+            Draw.updateCircleValue(18, 2, '1, Request1', false);
+            States.setupWalkthrough(18);
+            break;
+          }
+          case 19: {
+            Draw.drawCircleValues(stateNumber, null);
+            Draw.updateCircleValue(19, 0, 'Request1', false);
+            Draw.updateCircleValue(19, 1, '1, Request1, 1/1, 1/1', false);
+            Draw.updateCircleValue(19, 2, '1, Request1', false);
+            Draw.updateCircleValue(19, 3, 'null', false);
+            States.setupWalkthrough(19);
+            break;
+          }
+          case 20: {
+            Draw.drawCircleValues(stateNumber, null);
+            Draw.updateCircleValue(20, 0, 'Request1', false);
+            Draw.updateCircleValue(20, 1, '1, Request1, 1/1, 1/1', false);
+            Draw.updateCircleValue(20, 2, '1, Request1', false);
+            Draw.updateCircleValue(20, 3, 'Request1', false);
+            States.setupWalkthrough(20);
+            break;
+          }
           default: {
             Draw.drawCircleValues(stateNumber, null);
             Draw.drawMessages(stateNumber);
@@ -106,6 +163,20 @@ class States {
           Draw.updateCircleValue(stateNumber, client.machineIndex, clientRequest.value, false);
           States.cluster.send(clientRequest, client, States.cluster.proposers);
         })
+    });
+  }
+
+  static setupWalkthrough(stateNumber) {
+    console.log('States::setupWalkthrough', stateNumber);
+
+    States.messages[stateNumber].forEach(message => {
+      Draw.drawGlow(stateNumber, message.sender);
+      d3.select('#paxos svg').selectAll('#server' + message.sender + ',#value' + message.sender)
+        .on('click', function() {
+          Draw.drawMessage(stateNumber, message.sender, message.sendee[0], CONSTANTS.MESSAGE_DURATION_MS, function() {
+            Draw.updateCircleValue(stateNumber, message.sendee[0], message.ondelivermessage, true);
+          })
+        });
     });
   }
 

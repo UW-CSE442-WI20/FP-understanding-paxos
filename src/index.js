@@ -108,7 +108,7 @@ function setupStateListeners() {
     })
 }
 
-let currentState = 0;
+let currentState = 14;
 function update() {
   console.log('update');
 

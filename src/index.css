@@ -26,7 +26,7 @@ body {
     display: inline;
     position: fixed;
     top: 40%;
-    left: 20%;
+    left: 10%;
 
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
@@ -37,10 +37,10 @@ body {
 #paxos {
     display: inline-block;
     position: fixed;
-    top: 0px;
-    left: 10%;
+    top: 0%;
+    left: 15%;
+    width: 70%;
     height: 100%;
-    width: 80%;
 }
 
 #paxos text{
@@ -50,15 +50,44 @@ body {
     user-select: none; /* Standard */
 }
 
-#paxos .title {
+#caption {
+    display: inline-block;
+    position: fixed;
+    top: 70%;
+    left: 15%;
+    width: 70%;
+    text-align: justify;
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+}
+
+#caption h1 {
     font-family: 'IBM Plex Sans';
     font-weight: 700;
     font-style: italic;
+    font-size: 20pt;
+    margin-top: 0rem;
+    margin-bottom: 0rem;
 }
 
-#paxos .subtitle1, .subtitle2, .subtitle3, .subtitle4 {
+#caption p {
     font-family: 'IBM Plex Sans';
     font-weight: 400;
+    font-style: normal;
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+}
+
+#caption .proposer {
+    color: cadetblue;
+}
+
+#caption .acceptor {
+    color: mediumslateblue;
+}
+
+#caption .learner {
+    color: hotpink;
 }
 
 #paxos .label {

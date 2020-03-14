@@ -1,5 +1,5 @@
 
-export const GRAPHIC_TO_SCREEN_WIDTH_RATIO = 0.8;
+export const GRAPHIC_TO_SCREEN_WIDTH_RATIO = 0.7;
 export const GRAPHIC_TO_SCREEN_HEIGHT_RATIO = 1;
 
 export const CIRCLE_FILL_RATIO = 0.8;
@@ -21,7 +21,7 @@ export const PAGE_AUTHORS_FONT_SIZE_1 = 0;
 
 export const TITLE_FONT_SIZE = 32;
 export const SUBTITLE_FONT_SIZE = 18;
-export const CAPTION_LEFT_SCREEN_WIDTH_RATIO = 0.1;
+export const CAPTION_LEFT_SCREEN_WIDTH_RATIO = 0;
 export const CAPTION_BASELINE_LINES = 6;
 export const CAPTION_SUBTITLE_PADDING_PX = 10;
 
