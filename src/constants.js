@@ -12,6 +12,7 @@ export const CIRCLE_VALUE_TRANSITION_MS = 100;
 
 export const MESSAGE_RADIUS_PX = 20;
 export const MESSAGE_DURATION_MS = 1000;
+export const MESSAGE_LATENCY_MS = 1000;
 
 export const PAGE_TITLE_FONT_SIZE_0 = 36;
 export const PAGE_TITLE_FONT_SIZE_1 = 14;

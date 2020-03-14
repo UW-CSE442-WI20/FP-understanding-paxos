@@ -284,7 +284,7 @@ export function drawMessages(stateNumber) {
         for (let j in message.sendee) {
           drawMessage(stateNumber, message.sender, message.sendee[j], CONSTANTS.MESSAGE_DURATION_MS, function() {
             updateCircleValue(stateNumber, message.sendee[j], message.message, false)
-          }, 1000);
+          }, CONSTANTS.MESSAGE_LATENCY_MS);
         }
       });
   }
