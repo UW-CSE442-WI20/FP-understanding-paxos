@@ -49,7 +49,7 @@ function setupStateListeners() {
   d3.select('body')
   .on('wheel', () => {
     currentState += d3.event.wheelDelta < 0 ? 1 : -1;
-    currentState = Math.max(0, currentState);
+    currentState = Math.min(Math.max(0, currentState), States.states.length - 1);
     update();
   });
 

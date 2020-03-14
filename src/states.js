@@ -62,9 +62,21 @@ class States {
       .end()
       .then(() => {
         switch(stateNumber) {
+          case 23:
+            States.cluster = new PaxosCluster(stateNumber, States.states[stateNumber], false, true);
+            Draw.drawCircleValues(stateNumber, States.cluster.machines);
+            States.cluster.clients.forEach((client, i) => {
+              console.log(client, i);
+              Draw.updateCircleValue(stateNumber, client.machineIndex, States.messages[stateNumber][i].message, false);
+            });
+            States.setupListeners(stateNumber);
+            States.cluster.clients.forEach(client => {
+              Draw.drawGlow(stateNumber, client.machineIndex);
+            });
+            break;
           case 22:
           case 21: {
-            States.cluster = new PaxosCluster(stateNumber, States.states[stateNumber], true);
+            States.cluster = new PaxosCluster(stateNumber, States.states[stateNumber], true, false);
             Draw.drawCircleValues(stateNumber, States.cluster.machines);
             States.cluster.clients.forEach((client, i) => {
               Draw.updateCircleValue(stateNumber, client.machineIndex, States.messages[stateNumber][i].message, false);
@@ -105,11 +117,33 @@ class States {
     States.cluster.clients.forEach((client, i) => {
       d3.select('#paxos svg').selectAll('#server' + client.machineIndex + ',#value' + client.machineIndex)
         .on('click', function() {
-          let clientRequest = {type: 'client request', value: States.messages[stateNumber][i].message};
+          let clientRequest = {type: 'client request', value: States.messages[stateNumber][i].message, client: client};
           Draw.updateCircleValue(stateNumber, client.machineIndex, clientRequest.value, false);
           States.cluster.send(clientRequest, client, States.cluster.proposers);
-        })
+        });
     });
+
+    // add kill listeners if is on
+    if (States.cluster.kill) {
+      States.cluster.proposers.forEach((server) => {
+        d3.select('#paxos svg').selectAll('#server' + server.machineIndex + ',#value' + server.machineIndex)
+          .on('click', () => {
+            States.cluster.killMachine(server.machineIndex);
+          })
+      });
+      States.cluster.acceptors.forEach((server) => {
+        d3.select('#paxos svg').selectAll('#server' + server.machineIndex + ',#value' + server.machineIndex)
+          .on('click', () => {
+            States.cluster.killMachine(server.machineIndex);
+          })
+      });
+      States.cluster.learners.forEach((server) => {
+        d3.select('#paxos svg').selectAll('#server' + server.machineIndex + ',#value' + server.machineIndex)
+          .on('click', () => {
+            States.cluster.killMachine(server.machineIndex);
+          })
+      });
+    }
   }
 
   static setup6() {

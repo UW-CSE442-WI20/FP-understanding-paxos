@@ -21,4 +21,5 @@ state:int	title:string	subtitle1:string	subtitle2:string	subtitle3:string	subtit
 19	Paxos Walkthrough	caption for state 19				1	1	1	0
 20	Paxos Walkthrough	caption for state 20				1	1	1	0
 21	Paxos Demo	caption for state 21				1	1	1	1
-22	333 Paxos Demo	caption for state 22				1	1	0	1
+22	333 Paxos Demo	caption for state 22				1	1	1	1
+23	333 Paxos Demo with kill	caption for state 23				1	1	0	1

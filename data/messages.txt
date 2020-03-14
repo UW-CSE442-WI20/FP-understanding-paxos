@@ -16,3 +16,5 @@ state:int	sender:int	sendee:array	message:string
 20	3	[0]	Request1
 21	0	[1]	Request1
 22	0	[1 2 3]	Request1
+23	0	[1 2 3]	Request1
+23	1	[1 2 3]	Request2
