@@ -173,7 +173,7 @@ export function drawMessage(stateNumber, sender, sendee, duration, clientNum, de
   d3.select('#paxos svg')
     .append('circle')
     .classed('message', true)
-    .classed('client' + clientNum, true)
+    .classed('firstClient', clientNum == 1)
     .attr('cx', state[sender].x * width)
     .attr('cy', state[sender].y * height)
     .attr('r', CONSTANTS.MESSAGE_RADIUS_PX)
@@ -214,7 +214,7 @@ export function drawMessages(stateNumber) {
         for (let j in message.sendee) {
           drawMessage(stateNumber, message.sender, message.sendee[j], CONSTANTS.MESSAGE_DURATION_FAST_MS, message.sender + 1, function() {
             updateCircleValue(stateNumber, message.sendee[j], message.message, false)
-          }, CONSTANTS.MESSAGE_LATENCY_MS);
+          }, stateNumber == 5 ? CONSTANTS.MESSAGE_LATENCY_LARGE_MS : CONSTANTS.MESSAGE_LATENCY_SMALL_MS);
         }
       });
   }

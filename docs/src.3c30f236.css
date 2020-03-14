@@ -68,6 +68,10 @@ body {
     font-size: 20pt;
     margin-top: 0rem;
     margin-bottom: 0rem;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
 }
 
 #caption p {
@@ -95,13 +99,14 @@ body {
     font-weight: 400;
 }
 
-#paxos .message.client1 {
+#paxos .message {
+    fill: lightseagreen;
+}
+
+#paxos .message.firstClient {
     fill: lightsalmon;
 }
 
-#paxos .message.client2 {
-    fill: lightseagreen;
-}
 
 #paxos .glow {
     fill: gold;
@@ -131,4 +136,4 @@ body {
 }
 
 
-/*# sourceMappingURL=https://uw-cse442-wi20.github.io/FP-understanding-paxos/src.8eb0a3dd.css.map */
+/*# sourceMappingURL=https://uw-cse442-wi20.github.io/FP-understanding-paxos/src.3c30f236.css.map */

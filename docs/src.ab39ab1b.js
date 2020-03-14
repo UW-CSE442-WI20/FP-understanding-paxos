@@ -28631,11 +28631,11 @@ Object.keys(_d3Zoom).forEach(function (key) {
   });
 });
 },{"./dist/package.js":"pT13","d3-array":"K0bd","d3-axis":"mp0m","d3-brush":"tkh5","d3-chord":"Iy8J","d3-collection":"S3hn","d3-color":"Peej","d3-contour":"SiBy","d3-dispatch":"D3zY","d3-drag":"kkdU","d3-dsv":"EC2w","d3-ease":"pJ11","d3-fetch":"grWT","d3-force":"oYRE","d3-format":"VuZR","d3-geo":"Ah6W","d3-hierarchy":"Kps6","d3-interpolate":"k9aH","d3-path":"OTyq","d3-polygon":"H15P","d3-quadtree":"lUbg","d3-random":"Gz2j","d3-scale":"zL2z","d3-scale-chromatic":"ado2","d3-selection":"ysDv","d3-shape":"maww","d3-time":"hQYG","d3-time-format":"UYpZ","d3-timer":"rdzS","d3-transition":"UqVV","d3-voronoi":"rLIC","d3-zoom":"MHdZ"}],"M9eV":[function(require,module,exports) {
-module.exports = "https://uw-cse442-wi20.github.io/FP-understanding-paxos/states.cc453afa.txt";
+module.exports = "https://uw-cse442-wi20.github.io/FP-understanding-paxos/states.116422e2.txt";
 },{}],"plft":[function(require,module,exports) {
 module.exports = "https://uw-cse442-wi20.github.io/FP-understanding-paxos/captions.8ac67397.txt";
 },{}],"CEDv":[function(require,module,exports) {
-module.exports = "https://uw-cse442-wi20.github.io/FP-understanding-paxos/messages.6fdbd091.txt";
+module.exports = "https://uw-cse442-wi20.github.io/FP-understanding-paxos/messages.f4244eeb.txt";
 },{}],"iJA9":[function(require,module,exports) {
 "use strict";
 
@@ -28871,7 +28871,7 @@ function drawMessage(stateNumber, sender, sendee, duration, clientNum) {
   var deliveredCallback = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
   var noisems = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
   console.log('Draw::drawMessage', stateNumber, sender, sendee, duration, clientNum, deliveredCallback);
-  d3.select('#paxos svg').append('circle').classed('message', true).classed('client' + clientNum, true).attr('cx', state[sender].x * width).attr('cy', state[sender].y * height).attr('r', CONSTANTS.MESSAGE_RADIUS_PX).moveToBack().transition().duration(duration + Math.random() * noisems).ease(d3.easeLinear).attr('cx', state[sendee].x * width).attr('cy', state[sendee].y * height).remove().end().then(function () {
+  d3.select('#paxos svg').append('circle').classed('message', true).classed('firstClient', clientNum == 1).attr('cx', state[sender].x * width).attr('cy', state[sender].y * height).attr('r', CONSTANTS.MESSAGE_RADIUS_PX).moveToBack().transition().duration(duration + Math.random() * noisems).ease(d3.easeLinear).attr('cx', state[sendee].x * width).attr('cy', state[sendee].y * height).remove().end().then(function () {
     if (deliveredCallback != null) {
       deliveredCallback(sender, sendee);
     }
@@ -28896,7 +28896,7 @@ function drawMessages(stateNumber) {
       var _loop2 = function _loop2(j) {
         drawMessage(stateNumber, message.sender, message.sendee[j], CONSTANTS.MESSAGE_DURATION_FAST_MS, message.sender + 1, function () {
           updateCircleValue(stateNumber, message.sendee[j], message.message, false);
-        }, CONSTANTS.MESSAGE_LATENCY_MS);
+        }, stateNumber == 5 ? CONSTANTS.MESSAGE_LATENCY_LARGE_MS : CONSTANTS.MESSAGE_LATENCY_SMALL_MS);
       };
 
       for (var j in message.sendee) {
@@ -29673,7 +29673,7 @@ var States = /*#__PURE__*/function () {
         d3.select('#paxos svg').selectAll('#server' + message.sender + ',#value' + message.sender).on('click', function () {
           Draw.drawMessage(stateNumber, message.sender, message.sendee[0], CONSTANTS.MESSAGE_DURATION_FAST_MS, 1, function () {
             Draw.updateCircleValue(stateNumber, message.sendee[0], message.ondelivermessage, true);
-          });
+          }, CONSTANTS.MESSAGE_LATENCY_SMALL_MS);
         });
       });
     }
@@ -29716,7 +29716,7 @@ var States = /*#__PURE__*/function () {
                   _loop3(k);
                 }
               });
-            }, CONSTANTS.MESSAGE_LATENCY_MS);
+            }, CONSTANTS.MESSAGE_LATENCY_SMALL_MS);
           };
 
           for (var j in message.sendee) {
@@ -29861,4 +29861,4 @@ function update() {
   _states.default.update(currentState, graphicWidth, graphicHeight);
 }
 },{"d3":"UzF0","../data/states.txt":"M9eV","../data/captions.txt":"plft","../data/messages.txt":"CEDv","./constants.js":"iJA9","./states.js":"hW5V"}]},{},["Focm"], null)
-//# sourceMappingURL=https://uw-cse442-wi20.github.io/FP-understanding-paxos/src.d3a5e5bb.js.map
+//# sourceMappingURL=https://uw-cse442-wi20.github.io/FP-understanding-paxos/src.ab39ab1b.js.map

@@ -213,7 +213,7 @@ class States {
         .on('click', function() {
           Draw.drawMessage(stateNumber, message.sender, message.sendee[0], CONSTANTS.MESSAGE_DURATION_FAST_MS, 1, function() {
             Draw.updateCircleValue(stateNumber, message.sendee[0], message.ondelivermessage, true);
-          })
+          }, CONSTANTS.MESSAGE_LATENCY_SMALL_MS)
         });
     });
   }
@@ -255,7 +255,7 @@ class States {
                     }, 0);
                   }
                 });
-            }, CONSTANTS.MESSAGE_LATENCY_MS);
+            }, CONSTANTS.MESSAGE_LATENCY_SMALL_MS);
           }
         });
     }

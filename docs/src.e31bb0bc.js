@@ -29125,7 +29125,7 @@ function drawMessage(stateNumber, sender, sendee, duration, clientNum) {
   var deliveredCallback = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
   var noisems = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
   console.log('Draw::drawMessage', stateNumber, sender, sendee, duration, clientNum, deliveredCallback);
-  d3.select('#paxos svg').append('circle').classed('message', true).classed('client' + clientNum, true).attr('cx', state[sender].x * width).attr('cy', state[sender].y * height).attr('r', CONSTANTS.MESSAGE_RADIUS_PX).moveToBack().transition().duration(duration + Math.random() * noisems).ease(d3.easeLinear).attr('cx', state[sendee].x * width).attr('cy', state[sendee].y * height).remove().end().then(function () {
+  d3.select('#paxos svg').append('circle').classed('message', true).classed('firstClient', clientNum == 1).attr('cx', state[sender].x * width).attr('cy', state[sender].y * height).attr('r', CONSTANTS.MESSAGE_RADIUS_PX).moveToBack().transition().duration(duration + Math.random() * noisems).ease(d3.easeLinear).attr('cx', state[sendee].x * width).attr('cy', state[sendee].y * height).remove().end().then(function () {
     if (deliveredCallback != null) {
       deliveredCallback(sender, sendee);
     }
@@ -29150,7 +29150,7 @@ function drawMessages(stateNumber) {
       var _loop2 = function _loop2(j) {
         drawMessage(stateNumber, message.sender, message.sendee[j], CONSTANTS.MESSAGE_DURATION_FAST_MS, message.sender + 1, function () {
           updateCircleValue(stateNumber, message.sendee[j], message.message, false);
-        }, CONSTANTS.MESSAGE_LATENCY_MS);
+        }, stateNumber == 5 ? CONSTANTS.MESSAGE_LATENCY_LARGE_MS : CONSTANTS.MESSAGE_LATENCY_SMALL_MS);
       };
 
       for (var j in message.sendee) {
@@ -29927,7 +29927,7 @@ var States = /*#__PURE__*/function () {
         d3.select('#paxos svg').selectAll('#server' + message.sender + ',#value' + message.sender).on('click', function () {
           Draw.drawMessage(stateNumber, message.sender, message.sendee[0], CONSTANTS.MESSAGE_DURATION_FAST_MS, 1, function () {
             Draw.updateCircleValue(stateNumber, message.sendee[0], message.ondelivermessage, true);
-          });
+          }, CONSTANTS.MESSAGE_LATENCY_SMALL_MS);
         });
       });
     }
@@ -29970,7 +29970,7 @@ var States = /*#__PURE__*/function () {
                   _loop3(k);
                 }
               });
-            }, CONSTANTS.MESSAGE_LATENCY_MS);
+            }, CONSTANTS.MESSAGE_LATENCY_SMALL_MS);
           };
 
           for (var j in message.sendee) {
@@ -30142,7 +30142,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50910" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51684" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

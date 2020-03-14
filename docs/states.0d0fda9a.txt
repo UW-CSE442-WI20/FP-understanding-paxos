@@ -55,10 +55,10 @@ state:int	x:float	y:float	r:int	stroke:string	fill:string	opacity:float	class:st
 4	0.5	0.5	0	black	white	0	client		0
 4	0.5	0.5	0	black	white	0	client		0
 5	0.25	0.3	50	black	white	1	client	Client	1
-5	0.25	0.577128129	50	black	white	1	client	Client	1
 5	0.75	0.3	50	cadetblue	cadetblue	1	server	Replica	1
 5	0.65	0.577128129	50	cadetblue	cadetblue	1	server	Replica	1
 5	0.85	0.577128129	50	cadetblue	cadetblue	1	server	Replica	1
+5	0.25	0.577128129	50	black	white	1	client	Client	1
 5	0.5	0.5	0	black	white	0	client		0
 5	0.5	0.5	0	black	white	0	client		0
 5	0.5	0.5	0	black	white	0	client		0
@@ -66,10 +66,10 @@ state:int	x:float	y:float	r:int	stroke:string	fill:string	opacity:float	class:st
 5	0.5	0.5	0	black	white	0	client		0
 5	0.5	0.5	0	black	white	0	client		0
 6	0.25	0.3	50	black	white	1	client	Client	1
-6	0.25	0.577128129	50	black	white	1	client	Client	1
 6	0.75	0.25	30	cadetblue	cadetblue	1	server	Replica	1
 6	0.63	0.582553755	30	cadetblue	cadetblue	1	server	Replica	1
 6	0.87	0.582553755	30	cadetblue	cadetblue	1	server	Replica	1
+6	0.25	0.577128129	50	black	white	1	client	Client	1
 6	0.75	0.446276878	50	cadetblue	cadetblue	1	server	Primary	1
 6	0.5	0.5	0	black	white	0	client		0
 6	0.5	0.5	0	black	white	0	client		0
@@ -253,7 +253,6 @@ state:int	x:float	y:float	r:int	stroke:string	fill:string	opacity:float	class:st
 22	0.85	0.6	40	hotpink	hotpink	1	server learner	Learner 3	1
 22	0.5	0.5	0	black	white	0	client		0
 23	0.15	0.3	40	black	white	1	client	Client 1	1
-23	0.15	0.5	40	black	white	1	client	Client 2	1
 23	0.35	0.2	40	cadetblue	cadetblue	1	server proposer	Proposer 1	1
 23	0.35	0.4	40	cadetblue	cadetblue	1	server proposer	Proposer 2	1
 23	0.35	0.6	40	cadetblue	cadetblue	1	server proposer	Proposer 3	1
@@ -263,8 +262,8 @@ state:int	x:float	y:float	r:int	stroke:string	fill:string	opacity:float	class:st
 23	0.85	0.2	40	hotpink	hotpink	1	server learner	Learner 1	1
 23	0.85	0.4	40	hotpink	hotpink	1	server learner	Learner 2	1
 23	0.85	0.6	40	hotpink	hotpink	1	server learner	Learner 3	1
+23	0.15	0.5	40	black	white	1	client	Client 2	1
 24	0.15	0.3	40	black	white	1	client	Client 1	1
-24	0.15	0.5	40	black	white	1	client	Client 2	1
 24	0.35	0.2	40	cadetblue	cadetblue	1	server proposer	Proposer 1	1
 24	0.35	0.4	40	cadetblue	cadetblue	1	server proposer	Proposer 2	1
 24	0.35	0.6	40	cadetblue	cadetblue	1	server proposer	Proposer 3	1
@@ -274,3 +273,4 @@ state:int	x:float	y:float	r:int	stroke:string	fill:string	opacity:float	class:st
 24	0.85	0.2	40	hotpink	hotpink	1	server learner	Learner 1	1
 24	0.85	0.4	40	hotpink	hotpink	1	server learner	Learner 2	1
 24	0.85	0.6	40	hotpink	hotpink	1	server learner	Learner 3	1
+24	0.15	0.5	40	black	white	1	client	Client 2	1
