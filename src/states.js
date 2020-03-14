@@ -63,7 +63,7 @@ class States {
       .then(() => {
         switch(stateNumber) {
           case 21: {
-            States.cluster = new PaxosCluster(21, States.states[21]);
+            States.cluster = new PaxosCluster(21, States.states[21], true);
             Draw.drawCircleValues(stateNumber, States.cluster.machines);
             States.setupListeners(21);
             States.cluster.clients.forEach(client => {
