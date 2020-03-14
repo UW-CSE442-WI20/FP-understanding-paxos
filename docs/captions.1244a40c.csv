@@ -1,0 +1,23 @@
+state:int,title:string,subtitle1:string,subtitle2:string,subtitle3:string,opacity:float,prevenabled:int,nextenabled:int,resetenabled:int
+0,,,,,0,0,1,0
+1,Motivation,Suppose we have a single server and a single client who wishes to send a message to the server.,(click on the client to watch the message get sent),,1,1,1,0
+2,state 2,caption for state 2,,,1,1,1,0
+3,state 3,caption for state 3,,,1,1,1,0
+4,state 4,caption for state 4,,,1,1,1,0
+5,state 5,caption for state 5,,,1,1,1,0
+6,state 6,caption for state 6,,,1,1,1,0
+7,state 7,caption for state 7,,,1,1,1,0
+8,state 8,caption for state 8,,,1,1,1,0
+9,state 9,caption for state 9,,,1,1,1,0
+10,state 10,caption for state 10,,,1,1,1,0
+11,state 11,caption for state 11,,,1,1,1,0
+12,state 12,caption for state 12,,,1,1,1,0
+13,state 13,caption for state 13,,,1,1,1,0
+14,state 14,caption for state 14,,,1,1,1,1
+15,state 15,caption for state 15,,,1,1,1,1
+16,state 16,caption for state 16,,,1,1,1,1
+17,state 17,caption for state 17,,,1,1,1,1
+18,state 18,caption for state 18,,,1,1,1,1
+19,state 19,caption for state 19,,,1,1,1,1
+20,state 20,caption for state 20,,,1,1,1,1
+21,state 21,caption for state 21,,,1,1,0,1
