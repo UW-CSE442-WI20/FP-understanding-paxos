@@ -19,7 +19,7 @@ class PaxosMachine {
 
   handle(message) {
     // reset listener
-    this.machineIndex = this.cluster.machines.indexOf(this);
+    // this.machineIndex = this.cluster.machines.indexOf(this);
     switch(this.role) {
       case 'client': {
         this.clientValue = message.value;
@@ -200,6 +200,7 @@ class PaxosCluster {
           this.learners.push(paxosMachine);
           break;
         }
+        paxosMachine.machineIndex = this.machines.length;
         this.machines.push(paxosMachine);
     }
   }

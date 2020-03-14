@@ -65,6 +65,7 @@ class States {
           case 21: {
             States.cluster = new PaxosCluster(21, States.states[21], true);
             Draw.drawCircleValues(stateNumber, States.cluster.machines);
+            Draw.updateCircleValue(21, 0, States.messages[stateNumber][0].message, false);
             States.setupListeners(21);
             States.cluster.clients.forEach(client => {
               Draw.drawGlow(21, States.cluster.machines.indexOf(client));
@@ -98,13 +99,14 @@ class States {
     console.log('State::setupListeners', stateNumber);
 
     // client listener
-    d3.select('#paxos svg').selectAll('.client')
-      .on('click', function(d) {
-        let clientMachinesIndex = States.states[stateNumber].indexOf(d);
-        let clientRequest = {type: 'client request', value: 'hello, world'};
-        Draw.updateCircleValue(States.cluster.stateNum, clientMachinesIndex, clientRequest.value, false);
-        States.cluster.send(clientRequest, States.cluster.machines[clientMachinesIndex], States.cluster.proposers);
-      })
+    States.cluster.clients.forEach(client => {
+      d3.select('#paxos svg').selectAll('#server' + client.machineIndex + ',#value' + client.machineIndex)
+        .on('click', function() {
+          let clientRequest = {type: 'client request', value: States.messages[stateNumber][States.cluster.clients.indexOf(client)].message};
+          Draw.updateCircleValue(stateNumber, client.machineIndex, clientRequest.value, false);
+          States.cluster.send(clientRequest, client, States.cluster.proposers);
+        })
+    });
   }
 
   static setup6() {
